@@ -113,7 +113,7 @@ void printLevelOrder(TreeNode* root) {
         }
         else if(temp == NULL) {
             printf("%d ", -1);
-                }
+        }
     }
 }
 

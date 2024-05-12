@@ -1,0 +1,136 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+int arr[200] = {0,};
+// 트리 노드 구조체 정의
+typedef struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+} TreeNode;
+
+// 큐 구조체 정의
+typedef struct Queue {
+    TreeNode **array;
+    int front, rear;
+    unsigned capacity;
+} Queue;
+
+// 큐 생성 함수
+Queue* createQueue(unsigned capacity) {
+    Queue* queue = (Queue*)malloc(sizeof(Queue));
+    queue->capacity = capacity;
+    queue->front = queue->rear = -1;
+    queue->array = (TreeNode**)malloc(queue->capacity * sizeof(TreeNode*));
+    return queue;
+}
+
+// 큐가 가득 찼는지 확인하는 함수
+int isFull(Queue* queue) {
+    return (queue->rear + 1) % queue->capacity == queue->front;
+}
+
+// 큐가 비어 있는지 확인하는 함수
+int isEmpty(Queue* queue) {
+    return queue->front == -1;
+}
+
+// 큐에 요소를 추가하는 함수
+void enqueue(Queue* queue, TreeNode *item) {
+    if (isFull(queue))
+        return;
+    queue->rear = (queue->rear + 1) % queue->capacity;
+    queue->array[queue->rear] = item;
+    if (queue->front == -1)
+        queue->front = queue->rear;
+}
+
+// 큐에서 요소를 제거하고 반환하는 함수
+TreeNode* dequeue(Queue* queue) {
+    if (isEmpty(queue))
+        return NULL;
+    TreeNode *item = queue->array[queue->front];
+    if (queue->front == queue->rear)
+        queue->front = queue->rear = -1;
+    else
+        queue->front = (queue->front + 1) % queue->capacity;
+    return item;
+}
+
+// 레벨 순회 트리 생성 함수
+TreeNode* createLevelOrderTree(int arr[], int size) {
+    if (size <= 0)
+        return NULL;
+
+    TreeNode *root = (TreeNode*)malloc(sizeof(TreeNode));
+    root->val = arr[0];
+    root->left = root->right = NULL;
+
+    Queue* queue = createQueue(size);
+    enqueue(queue, root);
+
+    int i = 1;
+    while (i < size) {
+        TreeNode *parent = dequeue(queue);
+        if (parent == NULL)
+            break;
+
+        if (arr[i] != -1) {
+            TreeNode *leftChild = (TreeNode*)malloc(sizeof(TreeNode));
+            leftChild->val = arr[i];
+            leftChild->left = leftChild->right = NULL;
+            parent->left = leftChild;
+            enqueue(queue, leftChild);
+        }
+        i++;
+
+        if (i < size && arr[i] != -1) {
+            TreeNode *rightChild = (TreeNode*)malloc(sizeof(TreeNode));
+            rightChild->val = arr[i];
+            rightChild->left = rightChild->right = NULL;
+            parent->right = rightChild;
+            enqueue(queue, rightChild);
+        }
+        i++;
+    }
+
+    return root;
+}
+
+// 트리를 레벨 순서로 출력하는 함수
+void printLevelOrder(TreeNode* root) {
+    if (root == NULL)
+        return;
+    
+    Queue* queue = createQueue(100);
+    enqueue(queue, root);
+    while (!isEmpty(queue)) {
+        TreeNode *temp = dequeue(queue);
+        if (temp != NULL) {
+            printf("%d ", temp->val);
+            enqueue(queue, temp->left);
+            enqueue(queue, temp->right);
+        }
+        else if(temp == NULL) {
+            printf("%d ", -1);
+                }
+    }
+}
+
+int main() {
+    int i=0, cnt=0;
+	char str[400] = {0,};
+	char *s;
+	scanf("%[^\n]", str);	
+	for (i = 2; i > 1; cnt += i > 0) {
+  	i = sscanf(str, "%d%*[ ]%[^\n]", &arr[cnt], str);
+	}
+
+    TreeNode* root = createLevelOrderTree(arr, cnt);
+
+    printf("생성된 트리 (레벨 순회): ");
+    printLevelOrder(root);
+    printf("\n");
+
+    return 0;
+}

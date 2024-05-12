@@ -128,7 +128,6 @@ int main() {
 
     TreeNode* root = createLevelOrderTree(arr, cnt);
 
-    printf("생성된 트리 (레벨 순회): ");
     printLevelOrder(root);
     printf("\n");
 

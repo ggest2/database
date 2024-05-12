@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 int arr[200] = {0,};
-
 // 트리 노드 구조체 정의
 typedef struct TreeNode {
     int val;
@@ -59,10 +57,11 @@ TreeNode* dequeue(Queue* queue) {
     return item;
 }
 
-TreeNode* removeZero(TreeNode* root){
+//0만 있는 서브트리를 제거하는 함수
+TreeNode* removeOnlyZero(TreeNode* root){
     if(!root) return NULL;
-    root->left = removeZero(root->left);
-    root->right = removeZero(root->right);
+    root->left = removeOnlyZero(root->left);
+    root->right = removeOnlyZero(root->right);
     if((root->left == NULL || root->left == 0)&&(root->right == NULL || root->right == 0)&&(root->val == 0)){
     free(root);
     return NULL;
@@ -140,7 +139,7 @@ int main() {
 	}
 
     TreeNode* root = createLevelOrderTree(arr, cnt);
-    removeZero(root); 
+    removeOnlyZero(root); 
     printLevelOrder(root);
     printf("\n");
 

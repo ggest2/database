@@ -59,6 +59,32 @@ TreeNode* dequeue(Queue* queue) {
     return item;
 }
 
+TreeNode* checkRightMost(TreeNode* root, int size){
+    TreeNode* rightMostparent = NULL;
+    Queue* queue = createQueue(size);
+    if(root == NULL) return NULL;
+    enqueue(queue, root);
+    while(!isEmpty(queue)){
+        TreeNode* current = dequeue(queue);
+        if(current->left != NULL){
+            enqueue(queue, current->left);
+            rightMostparent = current;
+        }
+        if (current->right != NULL) {
+           enqueue(queue, current->right);
+            rightMostparent = current;
+        }
+    }
+    root = rightMostparent;
+
+    if(root->right->val == -1){
+        free(root->right);
+        root->right = NULL;
+    }
+    return root;
+}
+
+
 //0만 있는 서브트리를 제거하는 함수
 TreeNode* removeOnlyZero(TreeNode* root){
     if(!root) return NULL;
@@ -156,7 +182,8 @@ int main() {
 	}
 
     TreeNode* root = createLevelOrderTree(arr, cnt);
-    removeOnlyZero(root); 
+    removeOnlyZero(root);
+    checkRightMost(root, cnt);
     printLevelOrder(root, cnt);
     printf("\n");
 

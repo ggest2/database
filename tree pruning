@@ -77,9 +77,13 @@ TreeNode* checkRightMost(TreeNode* root, int size){
     }
     root = rightMostparent;
 
-    if(root->right->val == -1){
+    if(root->right != NULL && root->right->val == -1){
         free(root->right);
         root->right = NULL;
+    }
+    if(root->right == NULL && root->left->val == -1){
+        free(root->left);
+        root->left = NULL;
     }
     return root;
 }
@@ -144,7 +148,7 @@ TreeNode* createLevelOrderTree(int arr[], int size) {
             TreeNode *NULLNode = (TreeNode*)malloc(sizeof(TreeNode));
             NULLNode->val = arr[i];
             NULLNode->left = NULLNode->right = NULL;
-            parent->left = NULLNode;
+            parent->right = NULLNode;
         }
         i++;
     }

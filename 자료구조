@@ -9,6 +9,11 @@ typedef struct TreeNode {
     struct TreeNode *right;
 } TreeNode;
 
+typedef struct Node {
+    TreeNode* treenode;
+    struct Node* next;
+} Node;
+
 // Function to create a new TreeNode
 TreeNode* newTreeNode(int value) {
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));
@@ -118,10 +123,24 @@ int* treeToArray(TreeNode *root, int *size) {
     return array;
 }
 
+void freeTree(TreeNode* root){
+    if (!root) return;
+    freeTree(root->left);
+    freeTree(root->right);
+    free(root);
+}
 
 TreeNode* solution (TreeNode * root) {
-	// good luck
-	return root;
+    if(!root) return NULL;
+
+    root->left = solution(root->left);
+    root->right = solution(root->right);
+
+    if((root->val == 0 || root->val == -1) && (root->left == NULL || root->left == 0 || root->left->val == -1)&&(root->right == NULL || root->right == 0 || root->right->val == -1)){
+        freeTree(root);
+        return NULL;
+    }
+    return root;
 }
 
 
@@ -138,12 +157,12 @@ int main() {
 	// 위 코드를 수행하면 arr 에는 각 원소에 입력으로 받은 노드들이 저장됩니다.
 	
 	TreeNode* root = createTree(arr, cnt);
-	
+    
 	
 	///////////////////
-	
+    
 	root = solution(root);
-	
+    
 	// print tree as array
 	
 	int size = 0;

@@ -76,12 +76,6 @@ TreeNode* createTree(int arr[], int size) {
             parent->left = leftChild;
             enqueue(queue, leftChild);
         }
-        else if(arr[i] == -1){
-            TreeNode *NULLNode = (TreeNode*)malloc(sizeof(TreeNode));
-            NULLNode->val = arr[i];
-            NULLNode->left = NULLNode->right = NULL;
-            parent->left = NULLNode;
-        }
         i++;
 
         if (i < size && arr[i] != -1) {
@@ -90,12 +84,6 @@ TreeNode* createTree(int arr[], int size) {
             rightChild->left = rightChild->right = NULL;
             parent->right = rightChild;
             enqueue(queue, rightChild);
-        }
-        else if(i<size && arr[i] == -1){
-            TreeNode *NULLNode = (TreeNode*)malloc(sizeof(TreeNode));
-            NULLNode->val = arr[i];
-            NULLNode->left = NULLNode->right = NULL;
-            parent->right = NULLNode;
         }
         i++;
     }
@@ -114,11 +102,22 @@ int solution (TreeNode * root) {
         int levelwidth = 0;
         int nextnode = (queue->rear - queue->front + queue->capacity) % queue->capacity + 1;
 
+        int leftMost = 0, rightMost = nextnode - 1;
+        while (leftMost < nextnode && queue->array[(queue->front + leftMost) % queue->capacity] == NULL) {
+            leftMost++;
+        }
+        while (rightMost >= 0 && queue->array[(queue->front + rightMost) % queue->capacity] == NULL) {
+            rightMost--;
+        }
+
+        if (leftMost <= rightMost) {
+            levelwidth = rightMost - leftMost + 1;
+        }
+        
         for(int i = 0; i < nextnode; i++){
             TreeNode* node = dequeue(queue);
-            levelwidth++;
 
-            if(node != NULL && node->val != -1){
+            if(node != NULL){
                 enqueue(queue, node->left);
                 enqueue(queue, node->right);
             }
@@ -131,10 +130,10 @@ int solution (TreeNode * root) {
         if(levelwidth>ans){
             ans = levelwidth;
         }
-
+        
         int allNULL = 1;
         for(int i = queue->front; i != queue->rear; i = (i+1) % queue->capacity){
-            if(queue->array[i] != NULL && queue->array[i]->val != -1){
+            if(queue->array[i] != NULL){
                 allNULL = 0;
                 break;
             }
@@ -174,4 +173,5 @@ int main() {
 
 	return 0;
 }
+
 

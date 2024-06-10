@@ -57,7 +57,10 @@ TreeNode* createTree(int arr[], int size) {
         return NULL;
 
     TreeNode *root = (TreeNode*)malloc(sizeof(TreeNode));
+    if(arr[0] != -1){
     root->val = arr[0];
+    }
+    else return NULL;
     root->left = root->right = NULL;
 
     Queue* queue = createQueue(size);
